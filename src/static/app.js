@@ -519,6 +519,10 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Create share URL for the activity
+    const shareUrl = encodeURIComponent(window.location.origin + window.location.pathname);
+    const shareText = encodeURIComponent(`Check out ${name} at Mergington High School! ${details.description}`);
+
     activityCard.innerHTML = `
       ${tagHtml}
       <h4>${name}</h4>
@@ -568,6 +572,28 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+      </div>
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <a href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button share-twitter" 
+           title="Share on Twitter">
+          𝕏
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button share-facebook" 
+           title="Share on Facebook">
+          f
+        </a>
+        <a href="mailto:?subject=${encodeURIComponent(name + ' - Mergington High School Activity')}&body=${shareText}%0A%0ALearn more: ${shareUrl}" 
+           class="share-button share-email" 
+           title="Share via Email">
+          ✉
+        </a>
       </div>
     `;
 
