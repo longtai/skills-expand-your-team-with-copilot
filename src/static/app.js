@@ -1,4 +1,47 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Theme toggle elements
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  // Initialize theme from localStorage, system preference, or default to light
+  function initializeTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateThemeIcon(savedTheme);
+    } else {
+      // Check system preference
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = prefersDark ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+      updateThemeIcon(theme);
+    }
+  }
+
+  // Update the theme icon based on current theme
+  function updateThemeIcon(theme) {
+    if (themeIcon) {
+      themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    }
+  }
+
+  // Toggle between light and dark themes
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateThemeIcon(newTheme);
+  }
+
+  // Event listener for theme toggle button
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
+
+  // Initialize theme on page load
+  initializeTheme();
+
   // DOM elements
   const activitiesList = document.getElementById("activities-list");
   const messageDiv = document.getElementById("message");
@@ -553,6 +596,11 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Create share URL for the activity with activity-specific hash for deep linking
+    const activityHash = encodeURIComponent(name);
+    const shareUrl = encodeURIComponent(window.location.origin + window.location.pathname + '#activity=' + activityHash);
+    const shareText = encodeURIComponent(`Check out ${name} at Mergington High School! ${details.description}`);
+
     activityCard.innerHTML = `
       ${tagHtml}
       ${difficultyBadgeHtml}
@@ -603,6 +651,31 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+      </div>
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <a href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button share-twitter" 
+           title="Share on Twitter"
+           aria-label="Share on Twitter">
+          X
+        </a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           class="share-button share-facebook" 
+           title="Share on Facebook"
+           aria-label="Share on Facebook">
+          F
+        </a>
+        <a href="mailto:?subject=${encodeURIComponent(name + ' - Mergington High School Activity')}&body=${shareText}%0A%0ALearn more: ${shareUrl}" 
+           class="share-button share-email" 
+           title="Share via Email"
+           aria-label="Share via Email">
+          ✉
+        </a>
       </div>
     `;
 
