@@ -1,4 +1,47 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Theme toggle elements
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  // Initialize theme from localStorage, system preference, or default to light
+  function initializeTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      updateThemeIcon(savedTheme);
+    } else {
+      // Check system preference
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = prefersDark ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+      updateThemeIcon(theme);
+    }
+  }
+
+  // Update the theme icon based on current theme
+  function updateThemeIcon(theme) {
+    if (themeIcon) {
+      themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    }
+  }
+
+  // Toggle between light and dark themes
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateThemeIcon(newTheme);
+  }
+
+  // Event listener for theme toggle button
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
+
+  // Initialize theme on page load
+  initializeTheme();
+
   // DOM elements
   const activitiesList = document.getElementById("activities-list");
   const messageDiv = document.getElementById("message");
